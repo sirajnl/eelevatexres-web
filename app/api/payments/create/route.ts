@@ -5,7 +5,7 @@ import { z } from 'zod';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
-  apiVersion: '2024-06-20',
+  apiVersion: '2026-05-27.dahlia' as any,
 });
 
 const checkoutSchema = z.object({
@@ -22,11 +22,11 @@ export async function POST(req: Request) {
     if (!order) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
-    const lineItems = order.items.map((item) => ({
+    const lineItems = order.items.map((item: any) => ({
       price_data: {
         currency: 'usd',
         product_data: { name: item.menuItem.name },
-        unit_amount: Math.round(item.menuItem.price * 100),
+        unit_amount: Math.round(Number(item.menuItem.price) * 100),
       },
       quantity: item.quantity,
     }));

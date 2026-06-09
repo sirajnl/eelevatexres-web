@@ -6,10 +6,10 @@ if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient();
 } else {
   // Avoid multiple instances in development
-  if (!globalThis.prisma) {
-    globalThis.prisma = new PrismaClient();
+  if (!(globalThis as any).prisma) {
+    (globalThis as any).prisma = new PrismaClient();
   }
-  prisma = globalThis.prisma;
+  prisma = (globalThis as any).prisma;
 }
 
 export default prisma;

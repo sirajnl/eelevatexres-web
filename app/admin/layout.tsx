@@ -6,7 +6,7 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await protectedAdmin({});
+  await protectedAdmin();
 
   return (
     <div className="flex flex-1 overflow-hidden h-full">
