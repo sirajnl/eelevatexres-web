@@ -1,0 +1,1 @@
+// GlassCard.tsx – Reusable glassmorphism card component\nimport React, { ReactNode } from 'react';\n\ninterface GlassCardProps {\n  children: ReactNode;\n  className?: string;\n}\n\nexport default function GlassCard({ children, className = '' }: GlassCardProps) {\n  return (\n    <div\n      className={`glass-card ${className}`}\n    >\n      {children}\n    </div>\n  );\n}\n

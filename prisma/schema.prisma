@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  READY
+  SERVED
+  PAID
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  sortOrder Int       @default(0)
+  items     MenuItem[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model MenuItem {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal   @db.Decimal(10, 2)
+  image       String?
+  available   Boolean   @default(true)
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  orderItems  OrderItem[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Table {
+  id          String    @id @default(cuid())
+  number      Int       @unique
+  capacity    Int
+  status      TableStatus @default(AVAILABLE)
+  orders      Order[]
+  reservations Reservation[]
+}
+
+model Reservation {
+  id          String    @id @default(cuid())
+  table       Table      @relation(fields: [tableId], references: [id])
+  tableId     String
+  customerName String
+  phone       String
+  date        DateTime
+  time        DateTime
+  partySize   Int
+  status      String    @default("PENDING")
+}
+
+model Order {
+  id          String    @id @default(cuid())
+  table       Table      @relation(fields: [tableId], references: [id])
+  tableId     String
+  status      OrderStatus @default(PENDING)
+  total       Decimal   @db.Decimal(10, 2)
+  items       OrderItem[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model OrderItem {
+  id        String    @id @default(cuid())
+  order     Order     @relation(fields: [orderId], references: [id])
+  orderId   String
+  menuItem  MenuItem  @relation(fields: [menuItemId], references: [id])
+  menuItemId String
+  quantity  Int       @default(1)
+  notes     String?
+  status    String    @default("PENDING")
+}
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  passwordHash String
+  role UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders Order[]
+  reservations Reservation[]
+}
