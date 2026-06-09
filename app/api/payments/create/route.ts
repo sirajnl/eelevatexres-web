@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import { z } from 'zod';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_123', {
   apiVersion: '2026-05-27.dahlia' as any,
 });
 
